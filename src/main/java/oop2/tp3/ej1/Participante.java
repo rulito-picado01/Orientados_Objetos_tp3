@@ -1,6 +1,7 @@
 package oop2.tp3.ej1;
 
 import oop2.tp3.bd.ConexionBD;
+import oop2.tp3.mail.Mail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -24,6 +25,11 @@ public class Participante {
 
     public Inscripcion inscribirse(Concurso concurso) {
         Inscripcion inscripcion = concurso.inscribirParticipante(this);
+
+        if (inscripcion != null) {
+            Mail emailService = new Mail();
+            emailService.enviarMail(this.getDni(), this.nombre, concurso.getNombre());
+        }
 
         return inscripcion;
     }
