@@ -8,4 +8,5 @@ public class TarjetaVisa implements Tarjeta {
     public double calcularDescuento(Map<String, Integer> costo) {
         return costo.get("bebidas") * 0.03;
     }
+
 }

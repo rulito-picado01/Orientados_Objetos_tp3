@@ -8,4 +8,5 @@ public class TarjetaMastercard implements Tarjeta {
     public double calcularDescuento(Map<String, Integer> costo) {
         return costo.get("platos") * 0.02;
     }
+
 }

@@ -19,6 +19,7 @@ class RestauranteTest {
         mesa.asignarPedido(pedido);
     }
 
+
     @Test
     void testPagoConVisa() {
         pedido.agregarItem("bebidas", "coca-cola", 2, menu);
@@ -31,31 +32,41 @@ class RestauranteTest {
 
     @Test
     void testPagoConMastercard() {
+
         pedido.agregarItem("bebidas", "coca-cola", 2, menu);
         pedido.agregarItem("platos", "hamburguesa", 1, menu);
         pedido.confirmarPedido();
 
         Pago pago = new Pago(pedido, new TarjetaMastercard(), 5);
         assertEquals(4672.5, pago.calcularTotal(menu));
+
+        pago.guardarEnBaseDeDatos(pago.calcularTotal(menu), pedido.getMesaId());
+
     }
 
     @Test
     void testPagoConComarcaPlus() {
+
         pedido.agregarItem("bebidas", "coca-cola", 2, menu);
         pedido.agregarItem("platos", "hamburguesa", 1, menu);
         pedido.confirmarPedido();
 
         Pago pago = new Pago(pedido, new TarjetaComarcaPlus(), 5);
         assertEquals(4630.5, pago.calcularTotal(menu));
+
+        pago.guardarEnBaseDeDatos(pago.calcularTotal(menu), pedido.getMesaId());
     }
 
     @Test
     void testPagoSinDescuento() {
+
         pedido.agregarItem("bebidas", "coca-cola", 2, menu);
         pedido.agregarItem("platos", "hamburguesa", 1, menu);
         pedido.confirmarPedido();
 
         Pago pago = new Pago(pedido, new TarjetaGenerica(), 5);
         assertEquals(4725.0, pago.calcularTotal(menu));
+
+        pago.guardarEnBaseDeDatos(pago.calcularTotal(menu), pedido.getMesaId());
     }
 }

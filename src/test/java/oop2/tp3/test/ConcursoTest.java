@@ -26,14 +26,20 @@ public class ConcursoTest {
 
     @Test
     public void test02() {
+        concurso.guardarEnBaseDeDatos();
+        participante.guardarEnBaseDeDatos();
         Inscripcion inscripcion = participante.inscribirse(concurso);
         assertNotNull(inscripcion, "La inscripción debe ser exitosa");
+        inscripcion.guardarEnBaseDeDatos();
     }
 
     @Test
     public void test03() {
-        participante.inscribirse(concurso);
+        concurso.guardarEnBaseDeDatos();
+        participante.guardarEnBaseDeDatos();
+        Inscripcion inscripcion = participante.inscribirse(concurso);
         assertEquals(10, participante.puntosGanados());
+        inscripcion.guardarEnBaseDeDatos();
     }
 
     @Test

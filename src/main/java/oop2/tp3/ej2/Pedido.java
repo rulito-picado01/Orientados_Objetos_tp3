@@ -41,4 +41,8 @@ public class Pedido {
         }
         return costo;
     }
+
+    public int getMesaId() {
+        return mesaId;
+    }
 }

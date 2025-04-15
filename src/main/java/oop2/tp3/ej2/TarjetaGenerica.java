@@ -7,4 +7,5 @@ public class TarjetaGenerica implements Tarjeta {
     public double calcularDescuento(Map<String, Integer> costo) {
         return 0;
     }
+
 }
