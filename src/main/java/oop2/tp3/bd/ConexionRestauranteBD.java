@@ -13,3 +13,4 @@ public class ConexionRestauranteBD {
         return DriverManager.getConnection(URL, USUARIO, CONTRASEÑA);
     }
 }
+//hola hola
