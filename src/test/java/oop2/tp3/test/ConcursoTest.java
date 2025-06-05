@@ -54,4 +54,4 @@ public class ConcursoTest {
         assertEquals(0, participante.puntosGanados());
         assertFalse(concurso.estaInscripto(participante));
     }
-}
+}//hola
