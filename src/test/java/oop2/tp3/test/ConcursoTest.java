@@ -1,8 +1,6 @@
 package oop2.tp3.test;
 
-import oop2.tp3.ej1.Concurso;
-import oop2.tp3.ej1.Inscripcion;
-import oop2.tp3.ej1.Participante;
+import oop2.tp3.ej1.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,46 +8,50 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class ConcursoTest {
-    private Concurso concurso;
-    private Participante participante;
-
-    @BeforeEach
-    public void test01() {
-        LocalDate inicio = LocalDate.now();
-        LocalDate fin = inicio.plusDays(5);
-        concurso = new Concurso("Concurso de Programación", inicio, fin);
-        participante = new Participante("43685592", "Facundo");
-
-    }
 
     @Test
-    public void test02() {
-        concurso.guardarEnBaseDeDatos();
-        participante.guardarEnBaseDeDatos();
-        Inscripcion inscripcion = participante.inscribirse(concurso);
-        assertNotNull(inscripcion, "La inscripción debe ser exitosa");
-        inscripcion.guardarEnBaseDeDatos();
-    }
+    public void inscribeParticipanteCorrectamenteYAsignaPuntos() {
+        // Arrange
+        FakeRepositorioDeConcursos repoConcursos = new FakeRepositorioDeConcursos();
+        RepositorioDeInscripcionesFake repoInscripciones = new RepositorioDeInscripcionesFake();
+        NotificadorDeInscripcionesFake notificador = new NotificadorDeInscripcionesFake();
 
-    @Test
-    public void test03() {
-        concurso.guardarEnBaseDeDatos();
-        participante.guardarEnBaseDeDatos();
-        Inscripcion inscripcion = participante.inscribirse(concurso);
+        LocalDate hoy = LocalDate.now();
+        Concurso concurso = new Concurso("Literatura", hoy, hoy.plusDays(2),
+                repoConcursos, repoInscripciones, notificador);
+
+        Participante participante = new Participante("12345678", "Juan Pérez");
+
+        // Act
+        Inscripcion inscripcion = concurso.inscribirParticipante(participante);
+
+        // Assert
+        assertNotNull(inscripcion);
         assertEquals(10, participante.puntosGanados());
-        inscripcion.guardarEnBaseDeDatos();
+        assertTrue(concurso.estaInscripto(participante));
+        assertTrue(repoInscripciones.fueGuardada(inscripcion));
+        assertTrue(notificador.fueNotificado(inscripcion));
     }
 
     @Test
-    public void test04() {
-        LocalDate inicio = LocalDate.now().plusDays(3);
-        LocalDate fin = inicio.plusDays(5);
-        Concurso otroConcurso = new Concurso("Oferta de Trabajo", inicio, fin);
+    public void noPermiteInscripcionFueraDeFecha() {
+        // Arrange
+        LocalDate inicio = LocalDate.now().minusDays(5);
+        LocalDate fin = LocalDate.now().minusDays(1);
+        Concurso concurso = new Concurso("Arte", inicio, fin,
+                new FakeRepositorioDeConcursos(),
+                new RepositorioDeInscripcionesFake(),
+                new NotificadorDeInscripcionesFake());
 
-        participante.inscribirse(otroConcurso);
-        assertFalse(otroConcurso.estaInscripto(participante));
+        Participante participante = new Participante("98765432", "María López");
+
+        // Act
+        Inscripcion inscripcion = concurso.inscribirParticipante(participante);
+
+        // Assert
+        assertNull(inscripcion);
+        assertEquals(0, participante.puntosGanados());
+        assertFalse(concurso.estaInscripto(participante));
     }
-
 }

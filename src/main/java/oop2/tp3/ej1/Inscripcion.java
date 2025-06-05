@@ -7,36 +7,41 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class Inscripcion {
-    private Participante participante;
-    private Concurso concurso;
-    private LocalDate fechaInscripcion;
+    private final Participante participante;
+    private final Concurso concurso;
+    private final LocalDate fecha;
 
-    public Inscripcion(Participante participante, Concurso concurso, LocalDate fechaInscripcion) {
+    public Inscripcion(Participante participante, Concurso concurso, LocalDate fecha) {
         this.participante = participante;
         this.concurso = concurso;
-        this.fechaInscripcion = fechaInscripcion;
+        this.fecha = fecha;
     }
 
-    public Participante participante() {
+    public boolean esDe(Participante unParticipante) {
+        return this.participante.equals(unParticipante);
+    }
+
+    public void notificarCon(NotificadorDeInscripciones notificador) {
+        notificador.notificar(this.participante, this.concurso);
+    }
+
+    public void registrarEn(RepositorioDeInscripciones repositorio) {
+        repositorio.guardar(this);
+    }
+
+    // Métodos de acceso solo si realmente los necesitás
+    public Participante getParticipante() {
         return participante;
     }
 
-    public void guardarEnBaseDeDatos() {
-        String sql = "INSERT INTO inscripciones (fecha, participante_id, concurso_id) VALUES (?, ?, ?)";
-
-
-        try (Connection conn = ConexionBD.conectarBDC();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setDate(1, java.sql.Date.valueOf(fechaInscripcion));
-            stmt.setString(2, participante.getDni()); // suponiendo que DNI es la PK del participante
-            stmt.setString(3, concurso.getNombre());  // suponiendo que nombre es la PK del concurso
-
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            System.err.println("Error al guardar inscripción en BD: " + e.getMessage());
-            e.printStackTrace();
-        }
+    public Concurso getConcurso() {
+        return concurso;
     }
+
+    public LocalDate getFecha() {
+        return fecha;
+    }
+
+
+
 }
